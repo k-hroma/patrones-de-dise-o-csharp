@@ -310,12 +310,17 @@ void Mostrar(string texto)
 
 # 9.1 Creacionales
 
-Resuelven problemas de creación de objetos.
+Resuelven problemas de creación de objetos: estrategias para la creación de objetos.
+
+Estos patrones son herramientas que facilitan la creación de las entidades, encapsulando el proceso de construcción; de este modo, si se necesitara cambiar la estructura de un objeto, sus
+requerimientos o la manera en que estos se componen, las modificaciones se verían muy
+acotadas.
 
 Ejemplo:
 
 - Singleton
-- Factory
+- Factory method
+- Abstract factory
 - Builder
 
 ---
@@ -349,13 +354,20 @@ Ejemplo:
 
 # 10.1 Singleton
 
-## Intención
+Se asegura que exista una única instancia de un determinado objeto, al controlar el modo en el que éste se crea; es más plástico que una clase del tipo final con funciones estáticas ya que puede ser extendida y sus métodos sobreescritos
+
+Uno de los posibles usos puede ser el mantener la configuración del sistema cargada en memoria y disponible para toda la pieza de software.
+
+## Intención / Proósito
 
 Garantizar que exista una única instancia de una clase -> y ofrece acceso global a esa instancia.
 
 ---
 
 ## Problema que resuelve
+
+- El motivo más común es controlar el acceso a algún recurso compartido.
+- Permite acceder y controlar el acceso a variables globales.
 
 Cuando múltiples instancias serían incorrectas.
 
@@ -470,6 +482,7 @@ Configuracion config2 = Configuracion.ObtenerInstancia();
 ## Ventajas
 
 - Una sola instancia.
+- Un único punto de acceso a dicha instancia.
 - Control centralizado.
 - Evita variables globales dispersas.
 
@@ -477,10 +490,11 @@ Configuracion config2 = Configuracion.ObtenerInstancia();
 
 ## Desventajas
 
-- Puede ocultar mal diseño.
 - Rompe responsabilidad única.
 - Puede dificultar testing.
 - Problemas en multithreading si no se protege correctamente.
+- Puede ocultar un mal diseño, vulnerando el Principio de Inversión de
+  Dependencia.
 
 ---
 
@@ -492,7 +506,7 @@ NO debe usarse como reemplazo universal de variables globales.
 
 ---
 
-# 10.2 Factory Method
+# 10.2 Factory method
 
 ## Idea principal
 
@@ -636,13 +650,31 @@ IBoton boton = fabrica.CrearBoton();
 IVentana ventana = fabrica.CrearVentana();
 ```
 
-La aplicación no sabe qué clases concretas está utilizando.
-
-Trabaja únicamente con interfaces.
+- La aplicación no sabe qué clases concretas está utilizando.
+- Trabaja únicamente con interfaces.
 
 ---
 
 # Estructura del patrón
+
+### Fábrica abstracta
+
+- Define los métodos para crear productos abstractos.
+- No conoce las implementaciones concretas.
+
+### Fábricas concretas
+
+- Implementan la fábrica abstracta.
+- Crean una familia específica de productos concretos.
+
+### Productos abstractos
+
+- Son interfaces o clases abstractas que definen el comportamiento común.
+
+### Productos concretos
+
+- Implementan los productos abstractos.
+- Son creados por las fábricas concretas.
 
 ## Productos Abstractos
 

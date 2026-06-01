@@ -1,6 +1,4 @@
 ﻿
-using System;
-
 public interface IBoton
 {
   void Dibujar();
