@@ -1398,6 +1398,187 @@ var computadora = new ComputadoraBuilder()
 
 # 11. Patrones Estructurales
 
+- Se enfocan en la forma estructural de las clases
+
+## Índice
+
+- ¿Qué son los patrones estructurales?
+- Objetivo principal
+- Características generales
+- Diferencia con patrones creacionales
+- Diferencia con patrones de comportamiento
+- Lista de patrones estructurales
+- Cuándo utilizarlos
+- Ventajas
+- Desventajas
+
+---
+
+# ¿Qué son los patrones estructurales?
+
+Los patrones estructurales se enfocan en cómo las clases y objetos se relacionan entre sí para formar estructuras más grandes y flexibles.
+
+Mientras que los patrones creacionales se preocupan por la creación de objetos, los estructurales se preocupan por cómo esos objetos colaboran.
+
+---
+
+# Objetivo principal
+
+Resolver problemas relacionados con:
+
+- Composición de objetos.
+- Relaciones entre clases.
+- Organización de estructuras complejas.
+- Reducción del acoplamiento.
+- Reutilización de código.
+
+---
+
+# Características generales
+
+Los patrones estructurales suelen:
+
+- Utilizar composición en lugar de herencia.
+- Reducir dependencias entre componentes.
+- Facilitar la extensión de funcionalidades.
+- Ocultar complejidad.
+- Permitir estructuras flexibles.
+
+---
+
+# Diferencia con patrones creacionales
+
+## Creacionales
+
+Responden:
+
+> ¿Cómo se crean los objetos?
+
+Ejemplos:
+
+- Singleton
+- Factory Method
+- Abstract Factory
+- Builder
+
+---
+
+## Estructurales
+
+Responden:
+
+> ¿Cómo se conectan los objetos?
+
+Ejemplos:
+
+- Adapter
+- Composite
+- Decorator
+
+---
+
+# Diferencia con patrones de comportamiento
+
+## Estructurales
+
+Se enfocan en:
+
+```text
+Relaciones entre objetos
+```
+
+---
+
+## Comportamiento
+
+Se enfocan en:
+
+```text
+Comunicación y responsabilidades
+```
+
+---
+
+# Lista de patrones estructurales
+
+## Adapter
+
+Permite que clases incompatibles colaboren.
+
+---
+
+## Bridge
+
+Separa una abstracción de su implementación.
+
+---
+
+## Composite
+
+Permite tratar objetos individuales y grupos de objetos de forma uniforme.
+
+---
+
+## Decorator
+
+Agrega funcionalidades dinámicamente.
+
+---
+
+## Facade
+
+Proporciona una interfaz simplificada.
+
+---
+
+## Flyweight
+
+Reduce el consumo de memoria compartiendo objetos.
+
+---
+
+## Proxy
+
+Controla el acceso a otro objeto.
+
+---
+
+# Cuándo utilizarlos
+
+Cuando:
+
+- Existan muchas dependencias.
+- La estructura sea compleja.
+- Se necesite desacoplar componentes.
+- Se quiera reutilizar código.
+- Sea necesario ocultar complejidad.
+
+---
+
+# Ventajas
+
+- Menor acoplamiento.
+- Mayor reutilización.
+- Mayor mantenibilidad.
+- Código más flexible.
+- Mejor organización.
+
+---
+
+# Desventajas
+
+- Más clases.
+- Mayor complejidad inicial.
+- Curva de aprendizaje más alta.
+
+---
+
+# Resumen conceptual
+
+Los patrones estructurales se enfocan en cómo organizar y relacionar objetos para formar sistemas flexibles, mantenibles y reutilizables.
+
+Su objetivo principal es construir estructuras complejas a partir de componentes simples minimizando el acoplamiento.
+
 # 11.1 Adapter
 
 ## Intención
@@ -1525,6 +1706,365 @@ que pueden ser:
 - Composite.
 
 ---
+
+# 11.2 Composite
+
+## Índice
+
+- Intención
+- Problema que resuelve
+- Idea principal
+- Ejemplo cotidiano
+- Estructura del patrón
+- Implementación paso a paso
+- Implementación completa
+- Explicación del flujo
+- Características importantes
+- Ventajas
+- Desventajas
+- Cuándo usarlo
+- Cuándo NO usarlo
+- Resumen conceptual
+
+---
+
+# Intención
+
+Permitir tratar objetos individuales y composiciones de objetos de manera uniforme.
+
+---
+
+# Problema que resuelve
+
+Supongamos un explorador de archivos.
+
+Tenemos:
+
+- Archivos
+- Carpetas
+
+Una carpeta puede contener:
+
+- Archivos
+- Otras carpetas
+
+Queremos recorrer toda la estructura sin preocuparnos por si estamos trabajando con un archivo o una carpeta.
+
+---
+
+# Idea principal
+
+Todos los elementos comparten una misma interfaz.
+
+Por ejemplo:
+
+```text
+Componente
+├── Archivo
+└── Carpeta
+```
+
+De esta forma podemos trabajar con ambos de manera uniforme.
+
+---
+
+# Ejemplo cotidiano
+
+Una empresa.
+
+```text
+Empresa
+├── Gerencia
+│   ├── Juan
+│   └── Ana
+│
+└── Sistemas
+    ├── Pedro
+    └── María
+```
+
+Juan es un empleado.
+
+Gerencia es un grupo.
+
+Ambos pueden ser tratados como "miembros de la empresa".
+
+---
+
+# Estructura del patrón
+
+## Component
+
+Interfaz común.
+
+---
+
+## Leaf
+
+Objeto simple.
+
+No contiene hijos.
+
+---
+
+## Composite
+
+Objeto complejo.
+
+Puede contener otros componentes.
+
+---
+
+# Implementación paso a paso
+
+## Component
+
+```csharp
+public abstract class Componente
+{
+    public string Nombre { get; set; }
+
+    protected Componente(string nombre)
+    {
+        Nombre = nombre;
+    }
+
+    public abstract void Mostrar(int nivel);
+}
+```
+
+---
+
+## Leaf
+
+```csharp
+public class Archivo : Componente
+{
+    public Archivo(string nombre) : base(nombre)
+    {
+    }
+
+    public override void Mostrar(int nivel)
+    {
+        Console.WriteLine(new string('-', nivel) + Nombre);
+    }
+}
+```
+
+---
+
+## Composite
+
+```csharp
+public class Carpeta : Componente
+{
+    private readonly List<Componente> hijos =
+        new List<Componente>();
+
+    public Carpeta(string nombre) : base(nombre)
+    {
+    }
+
+    public void Agregar(Componente componente)
+    {
+        hijos.Add(componente);
+    }
+
+    public void Remover(Componente componente)
+    {
+        hijos.Remove(componente);
+    }
+
+    public override void Mostrar(int nivel)
+    {
+        Console.WriteLine(new string('-', nivel) + Nombre);
+
+        foreach (Componente hijo in hijos)
+        {
+            hijo.Mostrar(nivel + 2);
+        }
+    }
+}
+```
+
+---
+
+# Implementación completa
+
+```csharp
+public abstract class Componente
+{
+    public string Nombre { get; set; }
+
+    protected Componente(string nombre)
+    {
+        Nombre = nombre;
+    }
+
+    public abstract void Mostrar(int nivel);
+}
+
+public class Archivo : Componente
+{
+    public Archivo(string nombre) : base(nombre)
+    {
+    }
+
+    public override void Mostrar(int nivel)
+    {
+        Console.WriteLine(new string('-', nivel) + Nombre);
+    }
+}
+
+public class Carpeta : Componente
+{
+    private readonly List<Componente> hijos =
+        new List<Componente>();
+
+    public Carpeta(string nombre) : base(nombre)
+    {
+    }
+
+    public void Agregar(Componente componente)
+    {
+        hijos.Add(componente);
+    }
+
+    public void Remover(Componente componente)
+    {
+        hijos.Remove(componente);
+    }
+
+    public override void Mostrar(int nivel)
+    {
+        Console.WriteLine(new string('-', nivel) + Nombre);
+
+        foreach (Componente hijo in hijos)
+        {
+            hijo.Mostrar(nivel + 2);
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Carpeta raiz = new Carpeta("Proyecto");
+
+        raiz.Agregar(new Archivo("README.md"));
+
+        Carpeta src = new Carpeta("src");
+
+        src.Agregar(new Archivo("Program.cs"));
+        src.Agregar(new Archivo("Usuario.cs"));
+
+        raiz.Agregar(src);
+
+        raiz.Mostrar(1);
+    }
+}
+```
+
+---
+
+# Resultado
+
+```text
+-Proyecto
+---README.md
+---src
+-----Program.cs
+-----Usuario.cs
+```
+
+---
+
+# Explicación del flujo
+
+1. Se crea una carpeta raíz.
+2. Se agregan archivos.
+3. Se agregan carpetas.
+4. Las carpetas pueden contener otros componentes.
+5. Se recorre toda la estructura mediante recursión.
+
+---
+
+# Características importantes
+
+## Estructura jerárquica
+
+Representa árboles.
+
+---
+
+## Uniformidad
+
+Los clientes trabajan con Component.
+
+---
+
+## Recursividad
+
+Los composites contienen componentes.
+
+---
+
+## Flexibilidad
+
+Pueden agregarse elementos dinámicamente.
+
+---
+
+# Ventajas
+
+- Simplifica el cliente.
+- Facilita estructuras jerárquicas.
+- Permite tratar objetos simples y compuestos igual.
+- Facilita la recursión.
+
+---
+
+# Desventajas
+
+- Puede ser difícil restringir ciertos tipos de componentes.
+- Incrementa la complejidad del diseño.
+- Va en contra de la segregación de interfaces: las clases hoja están obligadas a implementar las funciones para la manipulación de la estructura aún cuando no puedan agregar, eliminar u obtener elementos por ser terminal.
+
+---
+
+# Cuándo usarlo
+
+Usalo cuando:
+
+- Existan estructuras tipo árbol.
+- Haya jerarquías de objetos.
+- Necesites tratar elementos individuales y grupos igual.
+
+Ejemplos:
+
+- Sistema de archivos.
+- Organigramas.
+- Menús.
+- Interfaces gráficas.
+- Árboles XML o HTML.
+
+---
+
+# Cuándo NO usarlo
+
+No lo uses cuando:
+
+- No exista una estructura jerárquica.
+- Los objetos simples y compuestos tengan comportamientos completamente distintos.
+
+---
+
+# Resumen conceptual
+
+Composite permite construir estructuras jerárquicas donde objetos individuales y grupos de objetos son tratados exactamente igual.
+
+El cliente interactúa siempre con la abstracción Component sin preocuparse por si está trabajando con una hoja (Leaf) o con un contenedor (Composite).
 
 # 11.3 Decorator
 
