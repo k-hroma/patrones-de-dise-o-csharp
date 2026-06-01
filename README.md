@@ -564,53 +564,764 @@ class FabricaAuto : Fabrica
 
 # 10.3 Abstract Factory
 
-## Idea principal
+## Índice
 
-Crear familias completas de objetos relacionados.
-
----
-
-## Diferencia con Factory Method
-
-Factory Method crea:
-
-- UN producto.
-
-Abstract Factory crea:
-
-- FAMILIAS de productos compatibles.
-
----
-
-## Ejemplo
-
-Tema oscuro:
-
-- botón oscuro,
-- ventana oscura,
-- menú oscuro.
-
-Tema claro:
-
-- botón claro,
-- ventana clara,
-- menú claro.
+- [Intención](#intención)
+- [Problema que resuelve](#problema-que-resuelve)
+- [Idea principal](#idea-principal)
+- [Estructura del patrón](#estructura-del-patrón)
+- [Ejemplo cotidiano](#ejemplo-cotidiano)
+- [Implementación paso a paso](#implementación-paso-a-paso)
+  - [Productos abstractos](#1-productos-abstractos)
+  - [Productos concretos](#2-productos-concretos)
+  - [Fábrica abstracta](#3-fábrica-abstracta)
+  - [Fábricas concretas](#4-fábricas-concretas)
+  - [Cliente](#5-cliente)
+- [Implementación completa](#implementación-completa)
+- [Explicación detallada del flujo](#explicación-detallada-del-flujo)
+- [Características importantes](#características-importantes)
+- [Ventajas](#ventajas)
+- [Desventajas](#desventajas)
+- [Diferencia con Factory Method](#diferencia-con-factory-method)
+- [Cuándo usarlo](#cuándo-usarlo)
+- [Cuándo NO usarlo](#cuándo-no-usarlo)
+- [Resumen conceptual](#resumen-conceptual)
 
 ---
 
-## Ventajas
+# Intención
 
-- Compatibilidad entre productos.
+Garantizar la creación de **familias de objetos relacionados** sin que el cliente conozca las clases concretas que se están utilizando.
+
+En lugar de crear objetos con `new`, el cliente delega la creación a una fábrica.
+
+---
+
+# Problema que resuelve
+
+Supongamos una aplicación con distintos temas visuales:
+
+- Tema Claro
+- Tema Oscuro
+
+Cada tema necesita:
+
+- Botón
+- Ventana
+- Menú
+
+No queremos mezclar componentes:
+
+❌ Botón Oscuro + Ventana Clara
+
+Necesitamos una forma de garantizar que todos los objetos creados pertenezcan a la misma familia.
+
+---
+
+# Idea principal
+
+En lugar de hacer:
+
+```csharp
+Boton boton = new BotonOscuro();
+Ventana ventana = new VentanaOscura();
+```
+
+hacemos:
+
+```csharp
+IFabricaGUI fabrica = new FabricaOscura();
+
+IBoton boton = fabrica.CrearBoton();
+IVentana ventana = fabrica.CrearVentana();
+```
+
+La aplicación no sabe qué clases concretas está utilizando.
+
+Trabaja únicamente con interfaces.
+
+---
+
+# Estructura del patrón
+
+## Productos Abstractos
+
+Definen las operaciones disponibles.
+
+```csharp
+IBoton
+IVentana
+```
+
+## Productos Concretos
+
+Implementaciones reales.
+
+```csharp
+BotonClaro
+BotonOscuro
+
+VentanaClara
+VentanaOscura
+```
+
+## Fábrica Abstracta
+
+Declara qué productos puede crear.
+
+```csharp
+IFabricaGUI
+```
+
+## Fábricas Concretas
+
+Implementan la creación de una familia específica.
+
+```csharp
+FabricaClara
+FabricaOscura
+```
+
+## Cliente
+
+Utiliza únicamente interfaces.
+
+---
+
+# Ejemplo cotidiano
+
+Imaginemos una fábrica de muebles.
+
+Familia Moderna:
+
+- Silla Moderna
+- Mesa Moderna
+
+Familia Clásica:
+
+- Silla Clásica
+- Mesa Clásica
+
+La fábrica moderna siempre crea muebles modernos.
+
+La fábrica clásica siempre crea muebles clásicos.
+
+Nunca se mezclan estilos.
+
+## Estructura del Patrón
+
+```csharp
+using System;
+
+#region Productos Abstractos
+
+public interface IProductA
+{
+    string OperacionA();
+}
+
+public interface IProductB
+{
+    string OperacionB();
+}
+
+#endregion
+
+#region Productos Concretos Familia 1
+
+public class ConcreteProductA1 : IProductA
+{
+    public string OperacionA()
+    {
+        return "Producto A1";
+    }
+}
+
+public class ConcreteProductB1 : IProductB
+{
+    public string OperacionB()
+    {
+        return "Producto B1";
+    }
+}
+
+#endregion
+
+#region Productos Concretos Familia 2
+
+public class ConcreteProductA2 : IProductA
+{
+    public string OperacionA()
+    {
+        return "Producto A2";
+    }
+}
+
+public class ConcreteProductB2 : IProductB
+{
+    public string OperacionB()
+    {
+        return "Producto B2";
+    }
+}
+
+#endregion
+
+#region Abstract Factory
+
+public interface IAbstractFactory
+{
+    IProductA CreateProductA();
+    IProductB CreateProductB();
+}
+
+#endregion
+
+#region Concrete Factory 1
+
+public class ConcreteFactory1 : IAbstractFactory
+{
+    public IProductA CreateProductA()
+    {
+        return new ConcreteProductA1();
+    }
+
+    public IProductB CreateProductB()
+    {
+        return new ConcreteProductB1();
+    }
+}
+
+#endregion
+
+#region Concrete Factory 2
+
+public class ConcreteFactory2 : IAbstractFactory
+{
+    public IProductA CreateProductA()
+    {
+        return new ConcreteProductA2();
+    }
+
+    public IProductB CreateProductB()
+    {
+        return new ConcreteProductB2();
+    }
+}
+
+#endregion
+
+#region Client
+
+public class Client
+{
+    private readonly IProductA productA;
+    private readonly IProductB productB;
+
+    public Client(IAbstractFactory factory)
+    {
+        productA = factory.CreateProductA();
+        productB = factory.CreateProductB();
+    }
+
+    public void SomeOperation()
+    {
+        Console.WriteLine(productA.OperacionA());
+        Console.WriteLine(productB.OperacionB());
+    }
+}
+
+#endregion
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Familia 1");
+
+        IAbstractFactory factory1 = new ConcreteFactory1();
+        Client client1 = new Client(factory1);
+
+        client1.SomeOperation();
+
+        Console.WriteLine();
+
+        Console.WriteLine("Familia 2");
+
+        IAbstractFactory factory2 = new ConcreteFactory2();
+        Client client2 = new Client(factory2);
+
+        client2.SomeOperation();
+    }
+}
+```
+
+---
+
+# Implementación paso a paso
+
+## 1. Productos abstractos
+
+### Botón
+
+```csharp
+public interface IBoton
+{
+    void Dibujar();
+}
+```
+
+### Ventana
+
+```csharp
+public interface IVentana
+{
+    void Mostrar();
+}
+```
+
+---
+
+## 2. Productos concretos
+
+### Tema Claro
+
+```csharp
+public class BotonClaro : IBoton
+{
+    public void Dibujar()
+    {
+        Console.WriteLine("Botón Claro");
+    }
+}
+```
+
+```csharp
+public class VentanaClara : IVentana
+{
+    public void Mostrar()
+    {
+        Console.WriteLine("Ventana Clara");
+    }
+}
+```
+
+### Tema Oscuro
+
+```csharp
+public class BotonOscuro : IBoton
+{
+    public void Dibujar()
+    {
+        Console.WriteLine("Botón Oscuro");
+    }
+}
+```
+
+```csharp
+public class VentanaOscura : IVentana
+{
+    public void Mostrar()
+    {
+        Console.WriteLine("Ventana Oscura");
+    }
+}
+```
+
+---
+
+## 3. Fábrica abstracta
+
+```csharp
+public interface IFabricaGUI
+{
+    IBoton CrearBoton();
+    IVentana CrearVentana();
+}
+```
+
+La interfaz obliga a todas las fábricas concretas a producir la misma familia de productos.
+
+---
+
+## 4. Fábricas concretas
+
+### Fábrica Clara
+
+```csharp
+public class FabricaClara : IFabricaGUI
+{
+    public IBoton CrearBoton()
+    {
+        return new BotonClaro();
+    }
+
+    public IVentana CrearVentana()
+    {
+        return new VentanaClara();
+    }
+}
+```
+
+### Fábrica Oscura
+
+```csharp
+public class FabricaOscura : IFabricaGUI
+{
+    public IBoton CrearBoton()
+    {
+        return new BotonOscuro();
+    }
+
+    public IVentana CrearVentana()
+    {
+        return new VentanaOscura();
+    }
+}
+```
+
+---
+
+## 5. Cliente
+
+```csharp
+public class Aplicacion
+{
+    private readonly IBoton boton;
+    private readonly IVentana ventana;
+
+    public Aplicacion(IFabricaGUI fabrica)
+    {
+        boton = fabrica.CrearBoton();
+        ventana = fabrica.CrearVentana();
+    }
+
+    public void Ejecutar()
+    {
+        boton.Dibujar();
+        ventana.Mostrar();
+    }
+}
+```
+
+La aplicación nunca utiliza:
+
+```csharp
+new BotonClaro();
+new BotonOscuro();
+new VentanaClara();
+new VentanaOscura();
+```
+
+Solo conoce:
+
+```csharp
+IBoton
+IVentana
+IFabricaGUI
+```
+
+---
+
+# Implementación completa
+
+```csharp
+using System;
+
+public interface IBoton
+{
+    void Dibujar();
+}
+
+public interface IVentana
+{
+    void Mostrar();
+}
+
+public class BotonClaro : IBoton
+{
+    public void Dibujar()
+    {
+        Console.WriteLine("Botón Claro");
+    }
+}
+
+public class BotonOscuro : IBoton
+{
+    public void Dibujar()
+    {
+        Console.WriteLine("Botón Oscuro");
+    }
+}
+
+public class VentanaClara : IVentana
+{
+    public void Mostrar()
+    {
+        Console.WriteLine("Ventana Clara");
+    }
+}
+
+public class VentanaOscura : IVentana
+{
+    public void Mostrar()
+    {
+        Console.WriteLine("Ventana Oscura");
+    }
+}
+
+public interface IFabricaGUI
+{
+    IBoton CrearBoton();
+    IVentana CrearVentana();
+}
+
+public class FabricaClara : IFabricaGUI
+{
+    public IBoton CrearBoton() => new BotonClaro();
+
+    public IVentana CrearVentana() => new VentanaClara();
+}
+
+public class FabricaOscura : IFabricaGUI
+{
+    public IBoton CrearBoton() => new BotonOscuro();
+
+    public IVentana CrearVentana() => new VentanaOscura();
+}
+
+public class Aplicacion
+{
+    private readonly IBoton boton;
+    private readonly IVentana ventana;
+
+    public Aplicacion(IFabricaGUI fabrica)
+    {
+        boton = fabrica.CrearBoton();
+        ventana = fabrica.CrearVentana();
+    }
+
+    public void Ejecutar()
+    {
+        boton.Dibujar();
+        ventana.Mostrar();
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        IFabricaGUI fabrica = new FabricaOscura();
+
+        Aplicacion app = new Aplicacion(fabrica);
+
+        app.Ejecutar();
+    }
+}
+```
+
+---
+
+# Explicación detallada del flujo
+
+### Paso 1
+
+Elegimos una fábrica.
+
+```csharp
+IFabricaGUI fabrica = new FabricaOscura();
+```
+
+### Paso 2
+
+La aplicación recibe la fábrica.
+
+```csharp
+Aplicacion app = new Aplicacion(fabrica);
+```
+
+### Paso 3
+
+La aplicación solicita productos.
+
+```csharp
+fabrica.CrearBoton();
+fabrica.CrearVentana();
+```
+
+### Paso 4
+
+La fábrica decide qué objetos crear.
+
+```text
+BotonOscuro
+VentanaOscura
+```
+
+### Paso 5
+
+La aplicación utiliza los objetos sin conocer sus clases concretas.
+
+```csharp
+boton.Dibujar();
+ventana.Mostrar();
+```
+
+---
+
+# Características importantes
+
+## Familias de objetos
+
+Crea grupos completos de objetos relacionados.
+
+## Bajo acoplamiento
+
+El cliente depende de interfaces.
+
+## Consistencia
+
+Evita combinar objetos incompatibles.
+
+## Fácil intercambio
+
+Permite cambiar familias completas reemplazando una única fábrica.
+
+---
+
+# Ventajas
+
+- Reduce el acoplamiento.
+- Garantiza compatibilidad entre productos.
+- Principio de responsabilidad única: el código de creación de un producto puede moverse a un lugar del programa. codigo más fácil de mantener.
+- Encapsula la creación de objetos.
+- Facilita el mantenimiento.
+- Principio Open/Close: se pueden incorporar nuevos tipos de productos en el programa sin descomponer el código.
+- Permite intercambiar familias completas fácilmente.
+
+---
+
+# Desventajas
+
+- Incrementa la cantidad de clases.
+- Agrega complejidad.
+- Agregar nuevos productos requiere modificar todas las fábricas.
+
+Ejemplo:
+
+Si agregamos:
+
+```csharp
+ICheckbox
+```
+
+debemos modificar:
+
+```csharp
+IFabricaGUI
+FabricaClara
+FabricaOscura
+```
+
+y todas las fábricas existentes.
+
+---
+
+# Diferencia con Factory Method
+
+## Factory Method
+
+Crea un único tipo de producto.
+
+```csharp
+Vehiculo CrearVehiculo();
+```
+
+## Abstract Factory
+
+Crea familias completas de productos relacionados.
+
+```csharp
+CrearBoton();
+CrearVentana();
+CrearMenu();
+CrearCheckbox();
+```
+
+### Resumen
+
+Factory Method:
+
+```text
+1 fábrica
+1 producto
+```
+
+Abstract Factory:
+
+```text
+1 fábrica
+muchos productos relacionados
+```
+
+---
+
+# Cuándo usarlo
+
+Usalo cuando:
+
+- Existan familias de objetos relacionadas.
+- Quieras garantizar compatibilidad.
+- Necesites intercambiar implementaciones fácilmente.
+- Quieras desacoplar la creación de objetos.
+
+Ejemplos:
+
+- Temas visuales.
+- Motores de bases de datos.
+- Sistemas operativos.
+- Frameworks gráficos.
+- Aplicaciones multiplataforma.
+
+---
+
+# Cuándo NO usarlo
+
+No lo uses cuando:
+
+- Solo exista un tipo de producto.
+- No haya familias relacionadas.
+- La complejidad adicional no aporte beneficios.
+- Un Factory Method sea suficiente.
+
+---
+
+# Resumen conceptual
+
+Abstract Factory es un patrón creacional que permite crear familias completas de objetos relacionados sin que el cliente conozca las clases concretas utilizadas.
+
+La aplicación trabaja contra interfaces:
+
+```csharp
+IBoton
+IVentana
+IFabricaGUI
+```
+
+y delega la construcción de objetos a fábricas concretas:
+
+```csharp
+FabricaClara
+FabricaOscura
+```
+
+Esto proporciona:
+
 - Bajo acoplamiento.
-- Escalable.
-
----
-
-## Desventajas
-
-- Muchas interfaces y clases.
-
----
+- Mayor mantenibilidad.
+- Consistencia entre productos.
+- Facilidad para intercambiar implementaciones.
 
 # 10.4 Builder
 
