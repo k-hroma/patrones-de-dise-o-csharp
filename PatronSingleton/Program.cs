@@ -1,6 +1,15 @@
 ﻿public class Configuracion
 {
+  // Propiedades de configuración global.
+  public string NombreAplicacion { get; set; }
+  public int MaximoUsuarios { get; set; }
+  public bool ModoDebug { get; set; }
+
+  // Atributo estático que almacena la única instancia de la clase.
+  // Referencia a la única instancia del Singleton.
   private static Configuracion instancia;
+
+  // Constructor privado: garantiza que la instancia solo pueda ser creada por la propia clase.
   private Configuracion()
   {
     NombreAplicacion = "Mi Sistema";
@@ -8,12 +17,8 @@
     ModoDebug = false;
   }
 
-  // Propiedades de configuración global.
-  public string NombreAplicacion { get; set; }
-  public int MaximoUsuarios { get; set; }
-  public bool ModoDebug { get; set; }
-
-  // Método estático para obtener la instancia única.
+  // Método estático que devuelve la única instancia de la clase.
+  // Si aún no existe, la crea.
   public static Configuracion ObtenerInstancia()
   {
     // Si todavía no existe una instancia...
@@ -23,11 +28,12 @@
       instancia = new Configuracion();
     }
 
-    // Si ya existía, simplemente devolvemos la misma.
+    // Devolvemos la instancia única.
     return instancia;
   }
 
-  // Método de ejemplo para mostrar los valores actuales.
+  // Métodos de negocio de la clase.
+  // Método de ejemplo para utilizar la configuración.
   public void MostrarConfiguracion()
   {
     Console.WriteLine($"Aplicación: {NombreAplicacion}");

@@ -51,7 +51,7 @@ public abstract class Juego
   }
 
   // ==================================================
-  // OPERACIÓN CONCRETA
+  // OPERACIÓN CONCRETA COMÚN A TODAS LAS SUBLCASES
   // ==================================================
   // Implementación común para todos los juegos.
   // Las subclases la heredan automáticamente.
@@ -65,7 +65,7 @@ public abstract class Juego
   }
 
   // ==================================================
-  // PRIMITIVE OPERATIONS
+  // PRIMITIVE OPERATIONS (Declara operaciones primitivas abstractas que deberán implementar las subclases.)
   // ==================================================
   // Pasos obligatorios.
   //
@@ -81,7 +81,7 @@ public abstract class Juego
   protected abstract void PublicarGanador();
 
   // ==================================================
-  // HOOKS
+  // HOOKS (Puede definir operaciones Hook opcionales para que las subclases las sobrescriban si lo necesitan.)
   // ==================================================
   // Puntos de extensión opcionales.
   //
@@ -103,11 +103,11 @@ public abstract class Juego
 }
 
 // ======================================================
-// AJEDREZ
+// AJEDREZ: CLASE CONCRETA
 // ======================================================
 // Utiliza únicamente las operaciones obligatorias.
-//
-// No necesita Hooks.
+// Proporciona el comportamiento específico de los pasos variables del algoritmo.
+// No necesita Hooks. (Puede sobrescribir operaciones Hook para personalizar determinados puntos de extensión.)
 // ======================================================
 
 public class Ajedrez : Juego
@@ -198,6 +198,13 @@ public class Parchis : Juego
   }
 }
 
+/**
+**Client(Cliente) **:
+   - Trabaja con la abstracción.
+   - Invoca el Template Method.
+   - No necesita conocer los detalles de implementación de cada paso del algoritmo.
+
+*/
 class Program
 {
   static void Main()

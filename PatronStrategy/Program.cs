@@ -4,7 +4,7 @@
 // STRATEGY
 // ======================================================
 // Define el contrato que deben cumplir todos los
-// algoritmos de pago.
+// algoritmos (de pago en este ejemplo)
 //
 // Todas las estrategias saben procesar un pago,
 // aunque cada una lo haga de forma diferente.
@@ -19,7 +19,8 @@ public interface IEstrategiaPago
 // ======================================================
 // CONCRETE STRATEGY
 // ======================================================
-// Implementa el algoritmo de pago con tarjeta.
+// Implementa un algoritmo específico utilizando la Interfaz Strategy 
+// Cada estrategia concreta (de pago en este ejemplo) representa una variante del comportamiento.
 //
 // ======================================================
 
@@ -72,21 +73,19 @@ public class PagoTransferencia : IEstrategiaPago
 // ======================================================
 //
 // Es la clase que utiliza la estrategia.
-//
 // NO sabe cómo se realiza el pago. No conoce detalles de implementación
-//
 // Sólo sabe que existe una estrategia capaz de ejecutar:
-//
 //  Pagar(monto)
-//
 // Gracias a esto puede trabajar con cualquier implementación y cambiar de estrategia en tiempo de ejecución.
 //
 // ======================================================
 
 public class CarritoCompras
 {
+  // Mantiene una referencia a un objeto Strategy.
   private IEstrategiaPago estrategiaPago;
 
+  // Se configura con una estrategia concreta-> la selecciona el cliente.
   // Inyección por constructor.
   public CarritoCompras(IEstrategiaPago estrategiaPago)
   {
@@ -99,6 +98,7 @@ public class CarritoCompras
     estrategiaPago = nuevaEstrategia;
   }
 
+  // Delega la ejecución del algoritmo a la estrategia almacenada.
   public void FinalizarCompra(decimal monto)
   {
     Console.WriteLine("Procesando compra...");
@@ -107,6 +107,13 @@ public class CarritoCompras
   }
 }
 
+
+/**
+ Client (Cliente):
+   - Selecciona la estrategia adecuada.
+   - Configura el contexto con la estrategia elegida.
+   - Interactúa únicamente con el contexto.
+*/
 class Program
 {
   static void Main()
@@ -141,6 +148,16 @@ class Program
     carrito.FinalizarCompra(3000);
   }
 }
+
+/**
+IMPORTANTE
+Lo importante del patrón no es que exista una única interfaz llamada Strategy, sino que:
+
+1. Existe un comportamiento variable.
+2. Ese comportamiento se encapsula detrás de una abstracción.
+3. El contexto delega la ejecución a esa abstracción.
+4. Las implementaciones pueden intercambiarse.
+*/
 
 /**
 Procesando compra...
